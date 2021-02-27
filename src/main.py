@@ -8,7 +8,6 @@ pygame.init()
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((612, 612))
 background = pygame.image.load('../images/board.png').convert()
-background = pygame.transform.scale2x(background).convert()
 
 game = Game()
 
