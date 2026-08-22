@@ -10,6 +10,14 @@ single device:
 Two people share one phone and hand it back and forth each turn. The first team to
 fly all 8 of its planes home to the center wins.
 
+## Screenshots
+
+| Start | New game | In play |
+| :---: | :---: | :---: |
+| ![Start screen](docs/screenshots/start.png) | ![New game — all planes in the hangars](docs/screenshots/board-new-game.png) | ![Mid-game — planes in play with legal moves highlighted](docs/screenshots/board-in-play.png) |
+
+*In play: two planes finished (2/8 home), a stack of two yellow planes on the track, a plane in the home column, and this turn's legal moves ringed in gold.*
+
 ---
 
 ## ▶️ Test it on your iPhone (no Mac, no Xcode needed)

@@ -19,6 +19,10 @@ npx expo start
 See **[`mobile/README.md`](./mobile/README.md)** for full instructions, rules, and
 project layout.
 
+| Start | New game | In play |
+| :---: | :---: | :---: |
+| ![Start screen](./mobile/docs/screenshots/start.png) | ![New game](./mobile/docs/screenshots/board-new-game.png) | ![In play](./mobile/docs/screenshots/board-in-play.png) |
+
 ## 🐍 Original prototype (pygame)
 
 The original backend/logic prototype lives in [`src/`](./src) (Python + pygame).
