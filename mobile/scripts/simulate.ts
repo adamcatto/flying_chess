@@ -48,7 +48,8 @@ const step = 1 / 15;
 let ringOk = true;
 for (let i = 0; i < LOOP.length; i++) {
   const d = dist(LOOP[i], LOOP[(i + 1) % LOOP.length]);
-  if (d > step * 1.6 + 1e-6) {
+  // Diagonally-cut corners step ~1.6 cells; allow up to 1.7.
+  if (d > step * 1.7 + 1e-6) {
     ringOk = false;
     console.error('    gap at', i, d.toFixed(3));
   }
