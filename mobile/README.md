@@ -16,7 +16,7 @@ fly all 8 of its planes home to the center wins.
 | :---: | :---: | :---: |
 | ![Start screen](docs/screenshots/start.png) | ![New game — all planes in the hangars](docs/screenshots/board-new-game.png) | ![Mid-game — planes in play with legal moves highlighted](docs/screenshots/board-in-play.png) |
 
-*In play: two planes finished (2/8 home), a stack of two yellow planes on the track, a plane in the home column, and this turn's legal moves ringed in gold.*
+The board is the actual `images/board.png` rendered as-is, with live plane tokens drawn on top. *In play: a stack of two yellow planes on the track, a plane in a home runway, one plane finished at the center ★, and this turn's legal moves ringed in gold.*
 
 ---
 
@@ -57,14 +57,12 @@ npm run web      # opens the game in your browser
   highlighted planes (either of your team's colors) to move it.
 - A plane leaves the hangar only when you roll a **6**. Rolling a 6 also earns an
   **extra roll**.
-- **Same‑color jump:** land on one of your team's tinted squares to leap forward
-  to the next one.
-- **Flight ✈:** land on your color's flight square (marked ✈) to fly a shortcut
-  across the board.
+- **Same‑color jump:** land on a square of your own color to leap forward to the
+  next square of your color.
 - **Capture:** land on an enemy plane to send it back to its hangar. Teammates can
-  safely share a square, and the ✦ start squares are safe for everyone.
-- **Home:** after a lap, a plane turns up its colored home column to the center
-  **★**. You must land exactly — overshooting bounces back.
+  safely share a square, and each color's start square is safe for everyone.
+- **Home:** after a lap, a plane turns up its colored runway to the center. You
+  must land exactly — overshooting bounces back.
 - Three 6s in a row forfeits your turn and sends that plane back!
 
 Tap **Rules** in‑game for the same summary.

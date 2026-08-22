@@ -18,7 +18,7 @@ import {
   HANGAR,
   LOOP_MAX,
   absLoopIndex,
-  applyShortcuts,
+  applyJump,
   colorsOfTeam,
   teamOf,
   SAFE_LOOP_INDICES,
@@ -114,8 +114,8 @@ function landingFor(plane: Plane, die: number): { to: number; shortcut: boolean 
   }
   let to = raw;
   let shortcut = false;
-  if (to >= 1 && to <= LOOP_MAX) {
-    const jumped = applyShortcuts(to);
+  if (to >= 1 && to < LOOP_MAX) {
+    const jumped = applyJump(to);
     if (jumped !== to) shortcut = true;
     to = jumped;
   }
@@ -262,7 +262,7 @@ export function applyMove(state: GameState, planeId: string): GameState {
   let msg = '';
   if (move.to === FINISH) msg = 'A plane reached home! ';
   if (captured > 0) msg += `Captured ${captured} enemy plane${captured > 1 ? 's' : ''}! `;
-  if (move.shortcut && move.to !== FINISH) msg += 'Shortcut! ';
+  if (move.shortcut && move.to !== FINISH) msg += 'Same-color jump! ';
 
   // Win check: all 8 planes of the current team finished.
   const teamPlanes = planesOfTeam(s, s.currentTeam);
