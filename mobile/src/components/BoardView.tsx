@@ -25,12 +25,18 @@ export default function BoardView({ state, size, highlightIds, onSelectPlane }: 
     groups.set(key, arr);
   }
 
+  // The landing circles in board.png are ~0.0396 of the board width in diameter.
+  // Size a single token's diameter to match, so it sits just inside a circle.
+  const CIRCLE_DIAM = 0.0396 * size;
+
   const nodes: React.ReactNode[] = [];
   groups.forEach((arr) => {
     const pt: Point = planePoint(arr[0].color, arr[0].pos, arr[0].slot);
     const n = arr.length;
     const single = n === 1;
-    const token = single ? size * 0.05 : size * 0.036;
+    // `token` is the token radius. Single tokens match the circle; stacked
+    // tokens shrink so a 2x2 cluster still fits around one circle.
+    const token = single ? CIRCLE_DIAM * 0.5 : CIRCLE_DIAM * 0.4;
     const off = single
       ? [[0, 0]]
       : [
