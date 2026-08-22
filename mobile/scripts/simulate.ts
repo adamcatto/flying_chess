@@ -11,7 +11,9 @@ import {
   FINISH,
   CENTER,
   START_INDEX,
-  applyJump,
+  applyShortcut,
+  FLIGHT_TAKEOFF_REL,
+  FLIGHT_LANDING_REL,
   absLoopIndex,
   OWN_COLOR_RELS,
   Color,
@@ -61,14 +63,15 @@ for (const color of ['yellow', 'blue', 'green', 'red'] as Color[]) {
   check(`${color} runway valid + connects loop tip -> center`, ok);
 }
 
-console.log('\n== Same-color jump ==');
-check('jump only fires on own-color squares', applyJump(3) === 3 && applyJump(2) !== 2);
-let jumpBounded = true;
+console.log('\n== Shortcuts (jump + flight) ==');
+check('shortcut only fires on special squares', applyShortcut(3).kind === 'none' && applyShortcut(2).kind === 'jump');
+check('flight takeoff flies to landing', applyShortcut(FLIGHT_TAKEOFF_REL).kind === 'flight' && applyShortcut(FLIGHT_TAKEOFF_REL).to === FLIGHT_LANDING_REL);
+let bounded = true;
 for (let r = 1; r < LOOP_MAX; r++) {
-  const j = applyJump(r);
-  if (j < r || j >= LOOP_MAX) jumpBounded = false;
+  const s = applyShortcut(r);
+  if (s.to < r || s.to >= LOOP_MAX) bounded = false;
 }
-check('jumps never go backward or past home entry', jumpBounded);
+check('shortcuts never go backward or past home entry', bounded);
 check('own-color rels are within loop', OWN_COLOR_RELS.every((r) => r >= 1 && r < LOOP_MAX));
 
 console.log('\n== Full random games ==');
@@ -79,7 +82,7 @@ function playGame(seed: number) {
     return x / 0xffffffff;
   };
   let state: GameState = initGame();
-  let steps = 0, launches = 0, captures = 0, jumps = 0;
+  let steps = 0, launches = 0, captures = 0, jumps = 0, flights = 0;
   while (!state.winner && steps < 300000) {
     steps++;
     if (state.phase === 'roll') state = roll(state, rand);
@@ -90,29 +93,30 @@ function playGame(seed: number) {
         moves.find((m) => m.to === FINISH) ??
         moves[Math.floor(rand() * moves.length)];
       if (best.from === -1) launches++;
-      if (best.shortcut) jumps++;
+      if (best.shortcut === 'jump') jumps++;
+      if (best.shortcut === 'flight') flights++;
       captures += best.capturedIds.length;
       state = applyMove(state, best.planeId);
     } else break;
   }
-  return { winner: state.winner, steps, launches, captures, jumps };
+  return { winner: state.winner, steps, launches, captures, jumps, flights };
 }
 
 let wins = { YG: 0, RB: 0, none: 0 };
-let tl = 0, tc = 0, tj = 0, maxSteps = 0;
+let tl = 0, tc = 0, tj = 0, tf = 0, maxSteps = 0;
 const N = 300;
 for (let i = 0; i < N; i++) {
   const r = playGame(i * 7919 + 1);
   if (r.winner === 'YG') wins.YG++;
   else if (r.winner === 'RB') wins.RB++;
   else wins.none++;
-  tl += r.launches; tc += r.captures; tj += r.jumps; maxSteps = Math.max(maxSteps, r.steps);
+  tl += r.launches; tc += r.captures; tj += r.jumps; tf += r.flights; maxSteps = Math.max(maxSteps, r.steps);
 }
 console.log(`  played ${N} games -> YG:${wins.YG} RB:${wins.RB} unfinished:${wins.none}`);
-console.log(`  avg launches:${(tl / N).toFixed(1)} captures:${(tc / N).toFixed(1)} jumps:${(tj / N).toFixed(1)} maxSteps:${maxSteps}`);
+console.log(`  avg launches:${(tl / N).toFixed(1)} captures:${(tc / N).toFixed(1)} jumps:${(tj / N).toFixed(1)} flights:${(tf / N).toFixed(1)} maxSteps:${maxSteps}`);
 check('every game finishes with a winner', wins.none === 0);
 check('both teams win at least some games', wins.YG > 0 && wins.RB > 0);
-check('launches, captures and jumps all occur', tl > 0 && tc > 0 && tj > 0);
+check('launches, captures, jumps and flights all occur', tl > 0 && tc > 0 && tj > 0 && tf > 0);
 
 console.log('\n== Rule spot checks ==');
 {

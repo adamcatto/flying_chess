@@ -12,6 +12,7 @@ const RULES: { h: string; b: string }[] = [
   { h: 'Your turn', b: 'Each turn you get 2 rolls. Tap ROLL, then tap one of the highlighted planes (either of your team’s colors) to move it.' },
   { h: 'Taking off', b: 'A plane leaves the hangar only when you roll a 6. Rolling a 6 also earns you an extra roll on top of your 2.' },
   { h: 'Same-color jump', b: 'Land on a square of your own color and your plane leaps forward to the next square of your color.' },
+  { h: 'Flight ✈', b: 'Land exactly on your color’s takeoff square (where its dashed line starts) to fly the whole way across the board along the line — a big shortcut toward home.' },
   { h: 'Capturing', b: 'Land on a square holding an enemy plane and it is sent all the way back to its hangar. Teammates can safely share a square, and each color’s start square is safe for everyone.' },
   { h: 'Going home', b: 'After a full lap a plane turns up its colored runway to the center. You must land on the center exactly — overshooting bounces back.' },
   { h: 'Winning', b: 'The first team to get all 8 of its planes to the center wins. Three 6s in a row forfeits your turn and sends that plane back!' },

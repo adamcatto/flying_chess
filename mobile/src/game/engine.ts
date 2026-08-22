@@ -18,7 +18,8 @@ import {
   HANGAR,
   LOOP_MAX,
   absLoopIndex,
-  applyJump,
+  applyShortcut,
+  ShortcutKind,
   colorsOfTeam,
   teamOf,
   SAFE_LOOP_INDICES,
@@ -38,8 +39,8 @@ export interface LegalMove {
   from: number;
   to: number;
   capturedIds: string[];
-  /** true if this move used a flight and/or same-color jump */
-  shortcut: boolean;
+  /** which board shortcut (if any) this move used */
+  shortcut: ShortcutKind;
 }
 
 export interface GameState {
@@ -97,13 +98,13 @@ function otherTeam(team: Team): Team {
 }
 
 /** Compute where a plane would land for a given die, or null if it can't move. */
-function landingFor(plane: Plane, die: number): { to: number; shortcut: boolean } | null {
+function landingFor(plane: Plane, die: number): { to: number; shortcut: ShortcutKind } | null {
   if (plane.pos === FINISH) return null;
 
   // In the hangar: can only launch with a 6.
   if (plane.pos === HANGAR) {
     if (die !== 6) return null;
-    return { to: 0, shortcut: false };
+    return { to: 0, shortcut: 'none' };
   }
 
   // On the loop or in the home column.
@@ -113,11 +114,11 @@ function landingFor(plane: Plane, die: number): { to: number; shortcut: boolean 
     raw = FINISH - (raw - FINISH);
   }
   let to = raw;
-  let shortcut = false;
+  let shortcut: ShortcutKind = 'none';
   if (to >= 1 && to < LOOP_MAX) {
-    const jumped = applyJump(to);
-    if (jumped !== to) shortcut = true;
-    to = jumped;
+    const res = applyShortcut(to);
+    to = res.to;
+    shortcut = res.kind;
   }
   return { to, shortcut };
 }
@@ -262,7 +263,10 @@ export function applyMove(state: GameState, planeId: string): GameState {
   let msg = '';
   if (move.to === FINISH) msg = 'A plane reached home! ';
   if (captured > 0) msg += `Captured ${captured} enemy plane${captured > 1 ? 's' : ''}! `;
-  if (move.shortcut && move.to !== FINISH) msg += 'Same-color jump! ';
+  if (move.to !== FINISH) {
+    if (move.shortcut === 'flight') msg += 'Flight! ✈ ';
+    else if (move.shortcut === 'jump') msg += 'Same-color jump! ';
+  }
 
   // Win check: all 8 planes of the current team finished.
   const teamPlanes = planesOfTeam(s, s.currentTeam);

@@ -59,6 +59,8 @@ npm run web      # opens the game in your browser
   **extra roll**.
 - **Same‑color jump:** land on a square of your own color to leap forward to the
   next square of your color.
+- **Flight ✈:** land exactly on your color's takeoff square (where its dashed line
+  starts) to fly the whole way across the board along the line — a big shortcut.
 - **Capture:** land on an enemy plane to send it back to its hangar. Teammates can
   safely share a square, and each color's start square is safe for everyone.
 - **Home:** after a lap, a plane turns up its colored runway to the center. You

@@ -127,15 +127,31 @@ export const OWN_COLOR_RELS = [2, 9, 13, 17, 20, 24, 27, 31, 35, 42];
 const OWN_SET = new Set(OWN_COLOR_RELS);
 
 /**
- * Same-color jump: if a move ends on one of your color's squares, advance to the
- * next same-color square. Applied once (bounded), and never past the home entry.
+ * The flight ("fly") shortcut. Each color's dashed line on board.png connects the
+ * square at relative position 6 (takeoff, near its own base) to the square at
+ * relative position 38 (landing, near its home stretch) — the same offsets for
+ * every color by the board's symmetry. Landing exactly on the takeoff square
+ * flies the plane the whole way across (+32).
  */
-export function applyJump(rel: number): number {
-  if (!OWN_SET.has(rel)) return rel;
-  for (const o of OWN_COLOR_RELS) {
-    if (o > rel && o < LOOP_MAX) return o;
+export const FLIGHT_TAKEOFF_REL = 6;
+export const FLIGHT_LANDING_REL = 38;
+
+export type ShortcutKind = 'none' | 'jump' | 'flight';
+
+/**
+ * Resolve board shortcuts for a move that ends on relative loop position `rel`:
+ *   - landing on the flight takeoff square flies to the landing square;
+ *   - otherwise landing on one of your color's squares jumps to the next one.
+ * At most one shortcut is applied, so the result is always bounded.
+ */
+export function applyShortcut(rel: number): { to: number; kind: ShortcutKind } {
+  if (rel === FLIGHT_TAKEOFF_REL) return { to: FLIGHT_LANDING_REL, kind: 'flight' };
+  if (OWN_SET.has(rel)) {
+    for (const o of OWN_COLOR_RELS) {
+      if (o > rel && o < LOOP_MAX) return { to: o, kind: 'jump' };
+    }
   }
-  return rel; // no further same-color square before home; stay put
+  return { to: rel, kind: 'none' };
 }
 
 /** Normalized point a plane currently occupies (hangar planes use their slot). */
